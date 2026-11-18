@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HOLLYWOOD VAMPIRE | Exclusive VIP Ticketing</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- html2canvas for instant 1-click Receipt Image Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     :root {
       --bg-dark: #070608;
@@ -76,7 +78,7 @@
       font-weight: 600;
     }
 
-    /* Hero Section with hero.jpg background */
+    /* Hero Section */
     .hero {
       text-align: center;
       padding: 90px 6% 70px;
@@ -291,16 +293,16 @@
       box-shadow: 0 0 18px rgba(255, 30, 56, 0.45);
     }
 
-    /* Modal / Invoice Generator */
+    /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.86);
+      background: rgba(0, 0, 0, 0.88);
       backdrop-filter: blur(6px);
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 18px;
+      padding: 16px;
       z-index: 999;
       overflow-y: auto;
     }
@@ -314,11 +316,13 @@
       border: 1px solid var(--gold);
       border-radius: 14px;
       width: 100%;
-      max-width: 540px;
-      padding: 28px;
+      max-width: 500px;
+      padding: 24px;
       position: relative;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
-      animation: fadeUp 0.3s ease;
+      animation: fadeUp 0.25s ease;
+      max-height: 92vh;
+      overflow-y: auto;
     }
 
     @keyframes fadeUp {
@@ -328,12 +332,12 @@
 
     .close-btn {
       position: absolute;
-      top: 16px;
+      top: 14px;
       right: 18px;
       background: none;
       border: none;
       color: var(--text-muted);
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       cursor: pointer;
     }
 
@@ -341,32 +345,43 @@
 
     .modal-box h3 {
       color: var(--gold);
-      font-size: 1.35rem;
-      margin-bottom: 6px;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
     }
 
     .modal-sub {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+    }
+
+    .error-msg {
+      color: #ff4d61;
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+      display: none;
+      background: rgba(255, 30, 56, 0.12);
+      padding: 8px 12px;
+      border-radius: 6px;
+      border-left: 3px solid var(--crimson-glow);
     }
 
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .form-group label {
       display: block;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.8px;
       color: var(--gold-light);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
 
     .form-group input, .form-group select {
       width: 100%;
-      padding: 12px 14px;
+      padding: 11px 13px;
       border-radius: 8px;
       border: 1px solid rgba(212, 175, 55, 0.3);
       background: #09070a;
@@ -380,30 +395,87 @@
       border-color: var(--crimson-glow);
     }
 
-    /* Invoice Preview Box */
-    .invoice-preview {
-      background: #09070a;
-      border: 1px dashed var(--gold);
-      border-radius: 10px;
-      padding: 16px;
-      margin: 18px 0;
-      font-size: 0.84rem;
+    /* Instant Visual Receipt Card (Appears Immediately on Same Page) */
+    #instantReceiptSection {
+      display: none;
+      animation: fadeUp 0.3s ease;
     }
 
-    .inv-row {
+    .receipt-card {
+      background: linear-gradient(145deg, #0d0a0f, #181018);
+      border: 1.5px solid var(--gold);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      position: relative;
+      color: #fff;
+    }
+
+    .receipt-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 8px;
-      color: #d6cedb;
+      align-items: center;
+      border-bottom: 1px dashed rgba(212, 175, 55, 0.4);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
     }
 
-    .inv-row.total {
-      border-top: 1px solid rgba(212, 175, 55, 0.25);
-      padding-top: 10px;
-      margin-top: 8px;
-      font-weight: 700;
+    .receipt-brand {
+      font-family: 'Cinzel', serif;
+      font-weight: 900;
       font-size: 1rem;
+      color: var(--gold);
+    }
+
+    .receipt-brand span {
+      color: var(--crimson-glow);
+    }
+
+    .receipt-status {
+      font-size: 0.68rem;
+      background: rgba(184, 12, 31, 0.25);
+      border: 1px solid var(--crimson-glow);
+      color: #ff6b7c;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      margin-bottom: 8px;
+      color: #dcd4e0;
+    }
+
+    .receipt-row span:first-child {
+      color: var(--text-muted);
+    }
+
+    .receipt-divider {
+      border-top: 1px dashed rgba(212, 175, 55, 0.35);
+      margin: 12px 0;
+    }
+
+    .receipt-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.05rem;
+      font-weight: 700;
       color: var(--gold-light);
+    }
+
+    .receipt-barcode {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+      font-family: monospace;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      color: var(--text-muted);
     }
 
     .action-stack {
@@ -417,7 +489,7 @@
       padding: 13px;
       border-radius: 8px;
       border: 1px solid var(--gold);
-      background: rgba(212, 175, 55, 0.14);
+      background: rgba(212, 175, 55, 0.16);
       color: var(--gold-light);
       font-weight: 700;
       font-size: 0.85rem;
@@ -447,8 +519,19 @@
       background: var(--crimson-glow);
     }
 
+    .btn-edit {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 6px;
+      text-align: center;
+    }
+
     .step-note {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
       text-align: center;
       margin-top: 8px;
@@ -473,7 +556,7 @@
   <section class="hero">
     <span class="hero-tag">Midnight Red Carpet Gala & Afterparty</span>
     <h1>ENTER THE IMMORTAL NIGHT</h1>
-    <p>Strictly limited VIP passes for Hollywood’s most exclusive nocturnal experience. Generate and download your official pro-forma invoice before completing your reservation via direct concierge email.</p>
+    <p>Strictly limited VIP passes for Hollywood’s most exclusive nocturnal experience. Generate your official invoice receipt instantly and complete your purchase via direct concierge email.</p>
     <div class="event-meta">
       <span>📍 Sunset Boulevard, Hollywood CA</span>
       <span>🗓️ Dec 31 • 10:00 PM Till Dawn</span>
@@ -502,7 +585,7 @@
   <main class="container">
     <div class="section-title">
       <h2>SELECT YOUR VIP TIER</h2>
-      <p>Download your official invoice first, then proceed to email confirmation.</p>
+      <p>Click below to generate your instant VIP invoice receipt.</p>
     </div>
 
     <div class="tiers-grid">
@@ -518,7 +601,7 @@
             <li>Official Commemorative Digital Pass</li>
           </ul>
         </div>
-        <button class="btn-select" onclick="openBooking('Silver Fang VIP', 350)">Reserve Silver Fang</button>
+        <button class="btn-select" onclick="openBooking('Silver Fang VIP', 350)">Pay / Reserve Silver Fang</button>
       </div>
 
       <!-- Tier 2 -->
@@ -534,7 +617,7 @@
             <li>Luxury Gift Box + Gold Foil VIP Badge</li>
           </ul>
         </div>
-        <button class="btn-select" onclick="openBooking('Crimson Bloodline VIP', 850)">Reserve Crimson VIP</button>
+        <button class="btn-select" onclick="openBooking('Crimson Bloodline VIP', 850)">Pay / Reserve Crimson VIP</button>
       </div>
 
       <!-- Tier 3 -->
@@ -549,56 +632,99 @@
             <li>Chauffeur Drop-Off Within Hollywood</li>
           </ul>
         </div>
-        <button class="btn-select" onclick="openBooking('Immortal Royal Table (4 Guests)', 2500)">Reserve Royal Table</button>
+        <button class="btn-select" onclick="openBooking('Immortal Royal Table (4 Guests)', 2500)">Pay / Reserve Royal Table</button>
       </div>
     </div>
   </main>
 
-  <!-- Booking & Invoice Modal -->
+  <!-- Booking & Instant Receipt Modal -->
   <div class="modal-overlay" id="bookingModal">
     <div class="modal-box">
       <button class="close-btn" onclick="closeBooking()">&times;</button>
-      <h3>VIP INVOICE GENERATOR</h3>
-      <p class="modal-sub">Step 1: Download your invoice. Step 2: Send via email to finalize payment.</p>
 
-      <div class="form-group">
-        <label>Full Name / Organization</label>
-        <input type="text" id="guestName" placeholder="e.g. Alexander Drake" oninput="updateInvoice()" required />
-      </div>
+      <!-- STEP 1: Guest Details Form -->
+      <div id="guestFormSection">
+        <h3>VIP RESERVATION</h3>
+        <p class="modal-sub">Enter your details to generate your instant official invoice.</p>
 
-      <div class="form-group">
-        <label>Your Email Address</label>
-        <input type="email" id="guestEmail" placeholder="e.g. alex@domain.com" oninput="updateInvoice()" required />
-      </div>
+        <div id="formError" class="error-msg">Please enter both your Full Name and Email Address to proceed.</div>
 
-      <div class="form-group">
-        <label>Ticket Quantity</label>
-        <select id="ticketQty" onchange="updateInvoice()">
-          <option value="1">1 Pass / Package</option>
-          <option value="2">2 Passes / Packages</option>
-          <option value="3">3 Passes / Packages</option>
-          <option value="4">4 Passes / Packages</option>
-          <option value="5">5 Passes / Packages</option>
-        </select>
-      </div>
+        <div class="form-group">
+          <label>Full Name / Organization</label>
+          <input type="text" id="guestName" placeholder="e.g. Alexander Drake" />
+        </div>
 
-      <div class="invoice-preview">
-        <div class="inv-row"><span>Invoice No:</span> <strong id="invNumber">HV-2026-8841</strong></div>
-        <div class="inv-row"><span>Selected Tier:</span> <strong id="invTier">Crimson Bloodline VIP</strong></div>
-        <div class="inv-row"><span>Unit Price:</span> <span id="invUnit">$850.00</span></div>
-        <div class="inv-row"><span>Quantity:</span> <span id="invQty">1</span></div>
-        <div class="inv-row total"><span>Total Due (USD):</span> <span id="invTotal">$850.00</span></div>
-      </div>
+        <div class="form-group">
+          <label>Your Email Address</label>
+          <input type="email" id="guestEmail" placeholder="e.g. alex@domain.com" />
+        </div>
 
-      <div class="action-stack">
-        <button type="button" class="btn-download" onclick="downloadInvoice()">
-          ⬇ 1. Download Official Invoice (HTML / Print PDF)
-        </button>
-        <button type="button" class="btn-email" onclick="proceedToEmail()">
-          ✉ 2. Proceed to Email Concierge to Buy
+        <div class="form-group">
+          <label>Ticket Quantity</label>
+          <select id="ticketQty">
+            <option value="1">1 Pass / Package</option>
+            <option value="2">2 Passes / Packages</option>
+            <option value="3">3 Passes / Packages</option>
+            <option value="4">4 Passes / Packages</option>
+            <option value="5">5 Passes / Packages</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn-select" style="margin-top: 10px;" onclick="showInstantReceipt()">
+          Generate Invoice & Proceed to Pay
         </button>
       </div>
-      <p class="step-note">Note: Attach your downloaded invoice file inside your email app before sending.</p>
+
+      <!-- STEP 2: Instant On-Screen Receipt (Shows Immediately!) -->
+      <div id="instantReceiptSection">
+        <h3>OFFICIAL VIP INVOICE</h3>
+        <p class="modal-sub">Download your receipt image below, then click Send to Email to finalize payment.</p>
+
+        <!-- Visual Receipt Card Captured for Download -->
+        <div class="receipt-card" id="receiptCaptureArea">
+          <div class="receipt-header">
+            <div class="receipt-brand">HOLLYWOOD <span>VAMPIRE</span></div>
+            <div class="receipt-status">AWAITING PAYMENT</div>
+          </div>
+
+          <div class="receipt-row"><span>Invoice ID:</span> <strong id="recId">HV-2026-8841</strong></div>
+          <div class="receipt-row"><span>Date Issued:</span> <span id="recDate">Nov 18, 2026</span></div>
+          <div class="receipt-row"><span>Guest Name:</span> <strong id="recName">Alexander Drake</strong></div>
+          <div class="receipt-row"><span>Guest Email:</span> <span id="recEmail">alex@domain.com</span></div>
+
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-row"><span>VIP Package:</span> <strong id="recTier">Crimson Bloodline VIP</strong></div>
+          <div class="receipt-row"><span>Unit Price:</span> <span id="recUnit">$850.00</span></div>
+          <div class="receipt-row"><span>Quantity:</span> <span id="recQty">1</span></div>
+
+          <div class="receipt-divider"></div>
+
+          <div class="receipt-total">
+            <span>TOTAL DUE:</span>
+            <span id="recTotal">$850.00 USD</span>
+          </div>
+
+          <div class="receipt-barcode">
+            |||| ||| || |||| ||| |||| ||| ||<br>
+            CONCIERGE: Hollywoodvampires.contact@gmail.com
+          </div>
+        </div>
+
+        <div class="action-stack">
+          <button type="button" class="btn-download" id="downloadBtn" onclick="downloadReceiptImage()">
+            ⬇ 1. Download Invoice Receipt (Image)
+          </button>
+          <button type="button" class="btn-email" onclick="proceedToEmail()">
+            ✉ 2. Send to Email to Complete Purchase
+          </button>
+          <button type="button" class="btn-edit" onclick="editDetails()">
+            ← Edit Guest Details
+          </button>
+        </div>
+        <p class="step-note">Attach your downloaded invoice receipt image in your email app before sending.</p>
+      </div>
+
     </div>
   </div>
 
@@ -607,7 +733,6 @@
   </footer>
 
   <script>
-    // UPDATED CONCIERGE EMAIL
     const CONCIERGE_EMAIL = "Hollywoodvampires.contact@gmail.com";
 
     let selectedTierName = "";
@@ -623,8 +748,11 @@
       selectedTierName = tierName;
       selectedUnitPrice = price;
       currentInvoiceId = generateInvoiceId();
-      document.getElementById("ticketQty").value = "1";
-      updateInvoice();
+
+      // Reset to form view
+      document.getElementById("formError").style.display = "none";
+      document.getElementById("guestFormSection").style.display = "block";
+      document.getElementById("instantReceiptSection").style.display = "none";
       document.getElementById("bookingModal").classList.add("active");
     }
 
@@ -632,135 +760,83 @@
       document.getElementById("bookingModal").classList.remove("active");
     }
 
-    function updateInvoice() {
-      const qty = parseInt(document.getElementById("ticketQty").value) || 1;
-      const total = selectedUnitPrice * qty;
-
-      document.getElementById("invNumber").textContent = currentInvoiceId;
-      document.getElementById("invTier").textContent = selectedTierName;
-      document.getElementById("invUnit").textContent = `$${selectedUnitPrice.toLocaleString()}.00`;
-      document.getElementById("invQty").textContent = qty;
-      document.getElementById("invTotal").textContent = `$${total.toLocaleString()}.00`;
-    }
-
-    function validateForm() {
+    function showInstantReceipt() {
       const name = document.getElementById("guestName").value.trim();
       const email = document.getElementById("guestEmail").value.trim();
+      const errorBox = document.getElementById("formError");
+
       if (!name || !email) {
-        alert("Abeg enter your Full Name and Email Address first before generating invoice!");
-        return null;
+        errorBox.style.display = "block";
+        return;
       }
-      return { name, email };
-    }
 
-    function downloadInvoice() {
-      const guest = validateForm();
-      if (!guest) return;
-
+      errorBox.style.display = "none";
       const qty = parseInt(document.getElementById("ticketQty").value) || 1;
       const total = selectedUnitPrice * qty;
-      const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
-      const invoiceHTML = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Invoice ${currentInvoiceId} - Hollywood Vampire VIP</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f7f7f7; color: #111; padding: 30px; }
-    .invoice-box { max-width: 700px; margin: auto; background: #fff; padding: 35px; border: 2px solid #111; }
-    .header { display: flex; justify-content: space-between; border-bottom: 2px solid #b80c1f; padding-bottom: 18px; margin-bottom: 24px; }
-    .brand { font-size: 24px; font-weight: bold; letter-spacing: 2px; color: #111; }
-    .brand span { color: #b80c1f; }
-    .meta { text-align: right; font-size: 13px; }
-    .details { margin-bottom: 25px; font-size: 14px; line-height: 1.7; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 25px; }
-    th { background: #111; color: #fff; text-align: left; padding: 12px; font-size: 13px; }
-    td { padding: 12px; border-bottom: 1px solid #ddd; font-size: 14px; }
-    .total-box { text-align: right; font-size: 18px; font-weight: bold; color: #b80c1f; }
-    .footer-note { margin-top: 30px; padding-top: 15px; border-top: 1px solid #ccc; font-size: 12px; color: #555; }
-  </style>
-</head>
-<body>
-  <div class="invoice-box">
-    <div class="header">
-      <div class="brand">HOLLYWOOD <span>VAMPIRE</span></div>
-      <div class="meta">
-        <strong>PRO-FORMA VIP INVOICE</strong><br>
-        Invoice #: ${currentInvoiceId}<br>
-        Date: ${dateStr}<br>
-        Status: UNPAID / PENDING EMAIL CONFIRMATION
-      </div>
-    </div>
-    <div class="details">
-      <strong>BILLED TO:</strong><br>
-      Name: ${guest.name}<br>
-      Email: ${guest.email}<br>
-      Event: Hollywood Vampire Midnight Red Carpet Gala
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>VIP Ticket Description</th>
-          <th>Unit Price</th>
-          <th>Qty</th>
-          <th>Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>${selectedTierName}</td>
-          <td>$${selectedUnitPrice.toLocaleString()}.00</td>
-          <td>${qty}</td>
-          <td>$${total.toLocaleString()}.00</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="total-box">TOTAL DUE: $${total.toLocaleString()}.00 USD</div>
-    <div class="footer-note">
-      <strong>NEXT STEP TO COMPLETE PURCHASE:</strong><br>
-      Please email this downloaded invoice to <strong>${CONCIERGE_EMAIL}</strong> with Subject: <em>VIP Ticket Order - ${currentInvoiceId}</em> to receive official payment instructions and your encrypted QR VIP pass.
-    </div>
-  </div>
-  <script>window.onload = function() { window.print(); }<\/script>
-</body>
-</html>`;
+      // Populate instant on-screen receipt
+      document.getElementById("recId").textContent = currentInvoiceId;
+      document.getElementById("recDate").textContent = dateStr;
+      document.getElementById("recName").textContent = name;
+      document.getElementById("recEmail").textContent = email;
+      document.getElementById("recTier").textContent = selectedTierName;
+      document.getElementById("recUnit").textContent = `$${selectedUnitPrice.toLocaleString()}.00`;
+      document.getElementById("recQty").textContent = qty;
+      document.getElementById("recTotal").textContent = `$${total.toLocaleString()}.00 USD`;
 
-      const blob = new Blob([invoiceHTML], { type: "text/html" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Hollywood_Vampire_Invoice_${currentInvoiceId}.html`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      // Switch immediately to Receipt view on the same screen
+      document.getElementById("guestFormSection").style.display = "none";
+      document.getElementById("instantReceiptSection").style.display = "block";
+    }
+
+    function editDetails() {
+      document.getElementById("instantReceiptSection").style.display = "none";
+      document.getElementById("guestFormSection").style.display = "block";
+    }
+
+    function downloadReceiptImage() {
+      const receiptEl = document.getElementById("receiptCaptureArea");
+      const btn = document.getElementById("downloadBtn");
+      btn.textContent = "Generating Receipt Image...";
+
+      html2canvas(receiptEl, {
+        backgroundColor: "#0d0a0f",
+        scale: 2
+      }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `Hollywood_Vampire_Invoice_${currentInvoiceId}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        btn.textContent = "✓ Invoice Downloaded! Now Click Step 2";
+      }).catch(() => {
+        btn.textContent = "⬇ 1. Download Invoice Receipt (Image)";
+      });
     }
 
     function proceedToEmail() {
-      const guest = validateForm();
-      if (!guest) return;
-
+      const name = document.getElementById("guestName").value.trim();
+      const email = document.getElementById("guestEmail").value.trim();
       const qty = parseInt(document.getElementById("ticketQty").value) || 1;
       const total = selectedUnitPrice * qty;
 
-      const subject = encodeURIComponent(`VIP Ticket Reservation [${currentInvoiceId}] - ${selectedTierName}`);
+      const subject = encodeURIComponent(`VIP Ticket Purchase [${currentInvoiceId}] - ${selectedTierName}`);
       const body = encodeURIComponent(
 `Hello Hollywood Vampire VIP Concierge,
 
-I would like to complete the purchase for my VIP reservation. Please find my details below (and my downloaded invoice attached):
+I would like to complete payment for my VIP reservation. Please find my invoice details below (and my downloaded invoice receipt attached):
 
 - Invoice Number: ${currentInvoiceId}
-- Full Name: ${guest.name}
-- Email: ${guest.email}
+- Full Name: ${name}
+- Email: ${email}
 - VIP Tier: ${selectedTierName}
 - Quantity: ${qty}
 - Total Amount Due: $${total.toLocaleString()}.00 USD
 
-Kindly send payment instructions so I can finalize my VIP pass.
+Please provide payment instructions so I can finalize my VIP access pass.
 
 Best regards,
-${guest.name}`
+${name}`
       );
 
       window.location.href = `mailto:${CONCIERGE_EMAIL}?subject=${subject}&body=${body}`;
